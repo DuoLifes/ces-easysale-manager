@@ -1,0 +1,13 @@
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNTE2MjM5MDIyfQ.xqbxZY_GxN8dGJ7gPMpMJhHvZ8YwZM1D9P7zB0z5T5E",
+    "permissions": ["admin"],
+    "userInfo": {
+      "username": "admin",
+      "avatar": "https://avatars.githubusercontent.com/u/1?v=4",
+      "role": "admin"
+    }
+  }
+}

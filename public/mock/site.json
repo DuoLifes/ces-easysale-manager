@@ -1,0 +1,54 @@
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "carrier": "移动",
+        "siteName": "北京移动数据中心1111",
+        "siteDes": "北京市海淀区中关村移动数据中心，提供5G网络服务和云计算支持",
+        "creator": "admin",
+        "createTime": "2024-03-15",
+        "updateTime": "2024-03-15"
+      },
+      {
+        "id": 2,
+        "carrier": "联通",
+        "siteName": "上海联通枢纽",
+        "siteDes": "上海市浦东新区联通通信枢纽中心，负责华东地区网络调度",
+        "creator": "admin",
+        "createTime": "2024-03-15",
+        "updateTime": "2024-03-15"
+      },
+      {
+        "id": 3,
+        "carrier": "电信",
+        "siteName": "广州电信IDC",
+        "siteDes": "广州市天河区电信IDC机房，提供云服务和数据存储",
+        "creator": "admin",
+        "createTime": "2024-03-15",
+        "updateTime": "2024-03-15"
+      },
+      {
+        "id": 4,
+        "carrier": "移动",
+        "siteName": "深圳移动5G中心",
+        "siteDes": "深圳市南山区移动5G创新中心，负责5G网络研发和测试",
+        "creator": "admin",
+        "createTime": "2024-03-15",
+        "updateTime": "2024-03-15"
+      },
+      {
+        "id": 5,
+        "carrier": "联通",
+        "siteName": "成都联通数据中心",
+        "siteDes": "成都市高新区联通数据中心，服务西南地区网络需求",
+        "creator": "admin",
+        "createTime": "2024-03-15",
+        "updateTime": "2024-03-15"
+      }
+    ],
+    "total": 5
+  }
+}
