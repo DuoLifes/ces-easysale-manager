@@ -5,6 +5,7 @@
     :rules="rules"
     :label-width="options.labelWidth"
     :validate-on-rule-change="false"
+    status-icon
   >
     <el-row>
       <el-col :span="options.span" v-for="item in options.list" :key="item.prop">
@@ -16,22 +17,19 @@
             :disabled="item.disabled"
             :placeholder="item.placeholder"
             clearable
-            @input="handleInput(item.prop)"
           ></el-input>
           <el-input-number
             v-else-if="item.type === 'number'"
             v-model="form[item.prop]"
             :disabled="item.disabled"
             controls-position="right"
-            @change="handleInput(item.prop)"
           ></el-input-number>
           <el-select
-            v-else-if="item.type === 'select'"
+            v-else-if="item.type === 'select' && !item.component"
             v-model="form[item.prop]"
             :disabled="item.disabled"
             :placeholder="item.placeholder"
             clearable
-            @change="handleInput(item.prop)"
           >
             <el-option
               v-for="opt in item.opts"
@@ -40,6 +38,16 @@
               :value="opt.value"
             ></el-option>
           </el-select>
+          <!-- 自定义组件 -->
+          <component
+            v-else-if="item.type === 'select' && item.component"
+            :is="item.component"
+            v-model="form[item.prop]"
+            :placeholder="item.placeholder"
+            :showAll="item.showAll === false ? false : true"
+            :carrier="item.prop === 'siteName' ? form['carrier'] : ''"
+            @update:carrier="handleUpdateCarrier"
+          ></component>
           <el-input
             v-else-if="item.type === 'textarea'"
             v-model="form[item.prop]"
@@ -47,14 +55,12 @@
             :placeholder="item.placeholder"
             type="textarea"
             :rows="4"
-            @input="handleInput(item.prop)"
           ></el-input>
           <el-date-picker
             v-else-if="item.type === 'date'"
             type="date"
             v-model="form[item.prop]"
             :value-format="item.format"
-            @change="handleInput(item.prop)"
           ></el-date-picker>
           <el-switch
             v-else-if="item.type === 'switch'"
@@ -63,7 +69,6 @@
             :inactive-value="item.inactiveValue"
             :active-text="item.activeText"
             :inactive-text="item.inactiveText"
-            @change="handleInput(item.prop)"
           ></el-switch>
           <el-upload
             v-else-if="item.type === 'upload'"
@@ -83,8 +88,8 @@
     </el-row>
 
     <div class="dialog-footer">
-      <el-button type="primary" @click="saveEdit(formRef)">确 定</el-button>
-      <el-button @click="$emit('cancel')">取 消</el-button>
+      <el-button type="primary" @click="submitForm(formRef)">确 定</el-button>
+      <el-button @click="cancelEdit">取 消</el-button>
     </div>
   </el-form>
 </template>
@@ -93,9 +98,7 @@
 import type { FormOption } from '@/types/form-option'
 import type { FormInstance, FormRules, UploadProps, FormItemRule } from 'element-plus'
 import type { PropType } from 'vue'
-import { ref } from 'vue'
-
-const emit = defineEmits(['cancel', 'update:modelValue'])
+import { ref, watch } from 'vue'
 
 const { options, formData, edit, update } = defineProps({
   options: {
@@ -116,16 +119,56 @@ const { options, formData, edit, update } = defineProps({
   },
 })
 
+// 触发取消事件
+const emit = defineEmits(['cancel'])
+
+// 取消编辑的方法
+const cancelEdit = () => {
+  emit('cancel')
+}
+
 const form = ref({ ...(edit ? formData : {}) })
 const formRef = ref<FormInstance>()
+
+// 处理运营商更新事件
+const handleUpdateCarrier = (val: string | number): void => {
+  console.log('TableEdit: 收到运营商更新:', val)
+
+  // 更新运营商值
+  form.value.carrier = val
+
+  // 清除站点选择
+  if (form.value.siteName) {
+    setTimeout(() => {
+      console.log('TableEdit: 清空站点选择')
+      form.value.siteName = ''
+    }, 100)
+  }
+}
+
+// 监听form中carrier的变化，当运营商变化时清空局点选择
+watch(
+  () => form.value.carrier,
+  (newVal) => {
+    console.log('TableEdit: 运营商变化为:', newVal)
+
+    if (form.value.siteName) {
+      // 延迟一点清空，以避免视觉上的不连贯
+      setTimeout(() => {
+        console.log('TableEdit: 清空站点选择')
+        form.value.siteName = ''
+      }, 100)
+    }
+  },
+)
 
 // 生成校验规则
 const rules: FormRules = options.list.reduce((acc, item) => {
   if (item.required) {
     const baseRule: FormItemRule = {
       required: true,
-      message: `${item.label}不能为空`,
-      trigger: ['blur', 'change'],
+      message: `请输入${item.label}`,
+      trigger: item.type === 'select' ? 'change' : 'blur',
     }
 
     // 根据字段类型添加额外的校验规则
@@ -139,9 +182,6 @@ const rules: FormRules = options.list.reduce((acc, item) => {
         message: `${item.label}必须是数字`,
         trigger: 'change',
       })
-    } else if (item.type === 'select') {
-      baseRule.type = 'enum'
-      baseRule.enum = item.opts?.map((opt) => opt.value) || []
     }
 
     acc[item.prop] = fieldRules
@@ -149,22 +189,35 @@ const rules: FormRules = options.list.reduce((acc, item) => {
   return acc
 }, {} as FormRules)
 
-// 处理输入事件，实时校验
-const handleInput = (prop: string) => {
-  if (formRef.value) {
-    formRef.value.validateField(prop)
+// 提交表单
+const submitForm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+
+  try {
+    await formEl.validate((valid, fields) => {
+      if (valid) {
+        console.log('TableEdit: 表单验证通过，提交数据')
+        update(form.value)
+      } else {
+        console.log('TableEdit: 表单验证失败', fields)
+      }
+    })
+  } catch (e) {
+    console.error('TableEdit: 表单验证过程出错', e)
   }
 }
 
-const saveEdit = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-
-  formEl.validate((valid) => {
-    if (valid) {
-      update(form.value)
-    }
-  })
+// 重置表单方法
+const resetFields = () => {
+  if (formRef.value) {
+    formRef.value.resetFields()
+  }
 }
+
+// 暴露方法给父组件
+defineExpose({
+  resetFields,
+})
 
 const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
   form.value.thumb = URL.createObjectURL(uploadFile.raw!)

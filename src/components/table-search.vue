@@ -1,6 +1,6 @@
 <template>
   <div class="search-container">
-    <el-form ref="searchRef" :model="query" :inline="true">
+    <el-form ref="searchRef" :model="localQuery" :inline="true">
       <div class="form-items" :style="{ '--form-items-per-row': props.layout }">
         <el-form-item
           :label="item.label"
@@ -10,17 +10,19 @@
         >
           <el-input
             v-if="item.type === 'input'"
-            v-model="query[item.prop]"
+            v-model="localQuery[item.prop]"
             :disabled="item.disabled"
             :placeholder="item.placeholder"
             clearable
+            @update:modelValue="updateQueryField(item.prop, $event)"
           ></el-input>
           <el-select
             v-else-if="item.type === 'select'"
-            v-model="query[item.prop]"
+            v-model="localQuery[item.prop]"
             :disabled="item.disabled"
             :placeholder="item.placeholder"
             clearable
+            @update:modelValue="updateQueryField(item.prop, $event)"
           >
             <el-option
               v-for="opt in item.opts"
@@ -32,9 +34,19 @@
           <el-date-picker
             v-else-if="item.type === 'date'"
             type="date"
-            v-model="query[item.prop]"
+            v-model="localQuery[item.prop]"
             :value-format="item.format"
+            @update:modelValue="updateQueryField(item.prop, $event)"
           ></el-date-picker>
+          <component
+            v-else-if="item.type === 'custom-component' && item.component"
+            :is="item.component"
+            v-model="localQuery[item.prop]"
+            :placeholder="item.placeholder"
+            :carrier="item.prop === 'siteName' ? localQuery['carrier'] : ''"
+            @update:modelValue="updateQueryField(item.prop, $event)"
+            @update:carrier="handleUpdateCarrier"
+          ></component>
         </el-form-item>
         <div class="button-wrapper">
           <div class="button-group">
@@ -51,8 +63,10 @@
 import type { FormInstance } from 'element-plus'
 import { Search, Refresh } from '@element-plus/icons-vue'
 import type { PropType } from 'vue'
-import { ref } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import type { FormOptionList } from '@/types/form-option'
+
+const emit = defineEmits(['update:query'])
 
 const props = defineProps({
   query: {
@@ -81,15 +95,53 @@ const props = defineProps({
   },
 })
 
+// 使用本地状态来跟踪查询条件
+const localQuery = reactive<Record<string, string | number | boolean>>({ ...props.query })
+
+// 监听props.query的变化，同步到本地状态
+watch(
+  () => props.query,
+  (newQuery) => {
+    Object.assign(localQuery, newQuery)
+  },
+  { deep: true },
+)
+
 const searchRef = ref<FormInstance>()
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
+
+  // 重置本地查询条件，然后通知父组件
+  Object.keys(localQuery).forEach((key) => {
+    localQuery[key] = ''
+  })
+
+  // 通知父组件更新
+  emit('update:query', { ...localQuery })
+
+  // 调用父组件的reset方法
   props.reset()
 }
 
 const search = () => {
+  // 更新父组件的query
+  emit('update:query', { ...localQuery })
+
+  // 执行搜索
   props.search()
+}
+
+// 更新查询字段的通用方法
+const updateQueryField = (field: string, value: string | number | boolean | null): void => {
+  const updatedQuery = { ...localQuery, [field]: value }
+  emit('update:query', updatedQuery)
+}
+
+// 处理运营商更新事件
+const handleUpdateCarrier = (val: string | number): void => {
+  console.log('TableSearch: 收到运营商更新:', val)
+  updateQueryField('carrier', val)
 }
 </script>
 

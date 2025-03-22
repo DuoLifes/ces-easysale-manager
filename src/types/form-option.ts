@@ -7,14 +7,17 @@ export interface FormOption {
 export interface FormOptionList {
   prop: string
   label: string
-  type: string
+  type: string // 'input' | 'select' | 'date' | 'custom-component' 等
   placeholder?: string
   disabled?: boolean
-  opts?: any[]
+  opts?: { label: string; value: string | number }[]
   format?: string
-  activeValue?: any
-  inactiveValue?: any
+  activeValue?: string | number | boolean
+  inactiveValue?: string | number | boolean
   activeText?: string
   inactiveText?: string
   required?: boolean
+  component?: object // 自定义组件
+  showAll?: boolean // 是否显示"全部"选项
+  componentProps?: Record<string, unknown> // 传递给自定义组件的额外属性
 }

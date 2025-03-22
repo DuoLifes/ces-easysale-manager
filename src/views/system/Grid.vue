@@ -10,6 +10,7 @@
       :layout="4"
       :fixed-buttons="true"
       class="table-search"
+      @update:query="handleQueryUpdate"
     />
 
     <!-- 数据表格 -->
@@ -41,12 +42,14 @@
       width="500px"
       destroy-on-close
       :close-on-click-modal="false"
-      @close="closeDialog"
+      @open="handleDialogOpen"
+      @closed="handleDialogClosed"
     >
       <template #header>
         <DialogTitle :title="isEdit ? '编辑网格' : '新增网格'" />
       </template>
       <TableEdit
+        ref="editFormRef"
         :form-data="rowData"
         :options="options"
         :edit="isEdit"
@@ -58,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch, markRaw } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { Grid } from '@/types/grid'
 import type { FormOption, FormOptionList } from '@/types/form-option'
@@ -69,6 +72,8 @@ import TableCustom from '@/components/table-custom.vue'
 import TableSearch from '@/components/table-search.vue'
 import TableEdit from '@/components/table-edit.vue'
 import DialogTitle from '@/components/dialog-title.vue'
+import CarrierSelect from '@/components/CarrierSelect.vue'
+import SiteSelect from '@/components/SiteSelect.vue'
 
 // 为组件定义名称
 defineOptions({
@@ -78,11 +83,8 @@ defineOptions({
 /**
  * 接口定义
  */
-interface ApiResponse<T> {
-  code: number
-  msg: string
-  data: T
-}
+// 表格行数据通用类型
+type TableRowData = Record<string, unknown>
 
 interface ApiError {
   msg?: string
@@ -113,6 +115,9 @@ const visible = ref(false)
 const isEdit = ref(false)
 const rowData = ref<Partial<Grid>>({})
 
+// 表单引用
+const editFormRef = ref()
+
 // 加载状态
 const loading = ref(false)
 
@@ -122,22 +127,21 @@ const loading = ref(false)
 // 查询表单配置
 const searchOpt = ref<FormOptionList[]>([
   {
-    type: 'select',
+    type: 'custom-component',
     label: '运营商：',
     prop: 'carrier',
     placeholder: '全部',
-    opts: [
-      { label: '全部', value: 'all' },
-      { label: '移动', value: '移动' },
-      { label: '联通', value: '联通' },
-      { label: '电信', value: '电信' },
-    ],
+    component: markRaw(CarrierSelect),
   },
   {
-    type: 'input',
+    type: 'custom-component',
     label: '局点名称：',
     prop: 'siteName',
-    placeholder: '请输入局点名称',
+    placeholder: '请选择局点',
+    component: markRaw(SiteSelect),
+    componentProps: {
+      showReverseSelect: true,
+    },
   },
   {
     type: 'input',
@@ -168,18 +172,19 @@ const options = ref<FormOption>({
       label: '运营商',
       prop: 'carrier',
       required: true,
-      opts: [
-        { label: '移动', value: '移动' },
-        { label: '联通', value: '联通' },
-        { label: '电信', value: '电信' },
-      ],
+      component: markRaw(CarrierSelect),
+      showAll: false,
     },
     {
-      type: 'input',
+      type: 'select',
       label: '局点名称',
       prop: 'siteName',
-      placeholder: '请输入',
+      placeholder: '请选择局点',
       required: true,
+      component: markRaw(SiteSelect),
+      componentProps: {
+        showReverseSelect: true,
+      },
     },
     {
       type: 'input',
@@ -190,6 +195,15 @@ const options = ref<FormOption>({
     },
   ],
 })
+
+// 监听运营商变化，重置局点
+watch(
+  () => query.carrier,
+  () => {
+    // 当运营商变化时，清空局点选择
+    query.siteName = ''
+  },
+)
 
 /**
  * 数据处理方法
@@ -240,6 +254,13 @@ const resetPagination = () => {
 /**
  * 查询相关方法
  */
+// 处理查询对象更新
+const handleQueryUpdate = (newQuery: typeof query): void => {
+  console.log('Grid: 查询条件更新:', newQuery)
+  // 更新查询条件
+  Object.assign(query, newQuery)
+}
+
 // 重置查询条件
 const resetQuery = () => {
   // 重置查询条件
@@ -292,8 +313,8 @@ const handleAdd = () => {
 }
 
 // 编辑网格
-const handleEdit = (row: Grid) => {
-  rowData.value = { ...row }
+const handleEdit = (row: TableRowData) => {
+  rowData.value = { ...row } as unknown as Grid
   isEdit.value = true
   visible.value = true
 }
@@ -301,17 +322,21 @@ const handleEdit = (row: Grid) => {
 // 关闭弹窗
 const closeDialog = () => {
   visible.value = false
-  isEdit.value = false
-  rowData.value = {}
+  // 延迟重置数据，等待动画完成
+  setTimeout(() => {
+    isEdit.value = false
+    rowData.value = {}
+  }, 100)
 }
 
 /**
  * CRUD操作方法
  */
 // 删除网格
-const handleDelete = async (row: Grid) => {
+const handleDelete = async (row: TableRowData) => {
   try {
-    const res = await deleteGrid(row.id)
+    const grid = row as unknown as Grid
+    const res = await deleteGrid(grid.id)
     if (res.code === 200) {
       ElMessage.success('删除成功')
       await getData()
@@ -369,6 +394,22 @@ const handleUpdate = async (formData: Partial<Grid>) => {
     console.error('操作失败:', error)
     ElMessage.error((error as ApiError)?.msg || '操作失败')
   }
+}
+
+// 对话框事件处理
+const handleDialogOpen = () => {
+  console.log('Grid: 对话框打开')
+  // 对话框打开后，等一小段时间再重置表单，确保组件已挂载
+  setTimeout(() => {
+    if (editFormRef.value) {
+      editFormRef.value.resetFields()
+    }
+  }, 100)
+}
+
+const handleDialogClosed = () => {
+  console.log('Grid: 对话框已关闭')
+  // 不需要在这里调用closeDialog，因为closed事件在关闭后触发
 }
 
 // 初始化加载数据
