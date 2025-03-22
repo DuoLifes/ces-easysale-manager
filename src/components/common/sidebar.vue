@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="sidebar">
     <el-menu
@@ -28,6 +29,7 @@
                   {{ threeItem.title }}
                 </el-menu-item>
               </el-sub-menu>
+              <!-- eslint-disable vue/valid-v-for -->
               <el-menu-item v-else :index="subItem.index">
                 {{ subItem.title }}
               </el-menu-item>
@@ -50,9 +52,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { usePermissStore } from '../store/permiss'
+import { usePermissStore } from '@/store/permiss'
 import { menuData } from './menu'
-import { useSidebarStore } from '../store/sidebar'
+import { useSidebarStore } from '@/store/sidebar'
 import type { Menus } from '@/types/menu'
 
 const route = useRoute()

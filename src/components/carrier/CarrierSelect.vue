@@ -49,14 +49,12 @@ export default {
     )
 
     const getCarrierList = async () => {
-      console.log('开始获取运营商列表')
       try {
         const res = await request({
-          url: '/api/carrier/list',
+          url: '/ces/tenant/list',
           method: 'post',
           data: {},
         })
-        console.log('运营商列表接口返回:', res)
 
         // 适配不同的数据结构
         let carrierData: Carrier[] = []
@@ -71,7 +69,6 @@ export default {
           // 另一种可能的结构
           carrierData = res.data.list
         } else {
-          console.warn('无法识别的运营商数据结构:', res.data)
           carrierData = []
         }
 
@@ -81,21 +78,17 @@ export default {
         } else {
           carrierList.value = carrierData
         }
-
-        console.log('运营商列表数据:', carrierList.value)
       } catch (error) {
         console.error('获取运营商列表失败:', error)
       }
     }
 
     const handleChange = (value: string | number) => {
-      console.log('运营商选择变化:', value)
       emit('update:modelValue', value)
       emit('change', value)
     }
 
     onMounted(() => {
-      console.log('CarrierSelect组件已挂载')
       getCarrierList()
     })
 

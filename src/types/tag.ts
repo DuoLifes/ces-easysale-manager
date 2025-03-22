@@ -22,7 +22,7 @@ export interface TagQuery {
   tagName?: string
   tagType?: string
   site?: string
-  pageNum?: number
+  pageNo?: number
   pageSize?: number
 }
 

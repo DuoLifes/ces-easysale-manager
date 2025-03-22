@@ -26,7 +26,7 @@ export interface StrategyQuery {
   carrier?: string // 运营商
   strategyType?: string // 策略类别
   site?: string // 所属局点
-  pageNum?: number // 当前页码
+  pageNo?: number // 当前页码
   pageSize?: number // 每页条数
 }
 

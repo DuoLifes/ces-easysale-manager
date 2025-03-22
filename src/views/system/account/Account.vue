@@ -59,13 +59,13 @@ import { ElMessage } from 'element-plus'
 import { Edit, Setting } from '@element-plus/icons-vue'
 import type { Account } from '@/types/account'
 import type { FormOptionList } from '@/types/form-option'
-import type { TableColumn } from '@/components/table-custom.vue'
+import type { TableColumn } from '@/components/common/table-custom.vue'
 import { fetchAccountList, fetchSiteData, fetchMarketingGroupData } from '@/api'
 import { useRouter } from 'vue-router'
 
 // 导入组件
-import TableCustom from '@/components/table-custom.vue'
-import TableSearch from '@/components/table-search.vue'
+import TableCustom from '@/components/common/table-custom.vue'
+import TableSearch from '@/components/common/table-search.vue'
 
 // 为组件定义名称
 defineOptions({
@@ -240,7 +240,7 @@ const getData = async () => {
     loading.value = true
     const res = await fetchAccountList({
       ...query,
-      pageNum: page.index,
+      pageNo: page.index,
       pageSize: page.size,
     })
     if (res.code === 200) {

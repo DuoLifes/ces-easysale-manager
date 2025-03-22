@@ -1,8 +1,9 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="header">
     <!-- 折叠按钮 -->
     <div class="header-left">
-      <img class="logo" src="../assets/img/logo.svg" alt="" />
+      <img class="logo" src="@/assets/img/logo.svg" alt="" />
       <div class="web-title">易随销管理后台</div>
       <div class="collapse-btn" @click="collapseChage">
         <el-icon v-if="sidebar.collapse">
@@ -42,12 +43,12 @@
 </template>
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useSidebarStore } from '../store/sidebar'
+import { useSidebarStore } from '@/store/sidebar'
 import { useRouter } from 'vue-router'
-import { usePermissStore } from '../store/permiss'
-import { useTabsStore } from '../store/tabs'
+import { usePermissStore } from '@/store/permiss'
+import { useTabsStore } from '@/store/tabs'
 import { resetRouter } from '@/router'
-import imgurl from '../assets/img/img.jpg'
+import imgurl from '@/assets/img/img.jpg'
 
 const username: string | null = localStorage.getItem('ms_username')
 const router = useRouter()
@@ -97,11 +98,17 @@ const setFullScreen = () => {
   const element = document.documentElement
   if (element.requestFullscreen) {
     element.requestFullscreen()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } else if ((element as any).webkitRequestFullScreen) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(element as any).webkitRequestFullScreen()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } else if ((element as any).mozRequestFullScreen) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(element as any).mozRequestFullScreen()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } else if ((element as any).msRequestFullscreen) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(element as any).msRequestFullscreen()
   }
 }

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="tabs">
     <div class="breadcrumb-title">
@@ -25,7 +26,7 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
-import { menuData } from '@/components/menu'
+import { menuData } from '@/components/common/menu'
 
 const route = useRoute()
 const router = useRouter()
@@ -63,15 +64,16 @@ const handleBack = () => {
 }
 
 // 父级菜单标题
-const parentTitle = computed(() => parentMenu.value.title)
 
-// 父级菜单路径
-const parentPath = computed(() => {
-  if (parentMenu.value.children && parentMenu.value.children.length > 0) {
-    return parentMenu.value.children[0].index
-  }
-  return parentMenu.value.index
-})
+// const parentTitle = computed(() => parentMenu.value.title)
+
+// // 父级菜单路径
+// const parentPath = computed(() => {
+//   if (parentMenu.value.children && parentMenu.value.children.length > 0) {
+//     return parentMenu.value.children[0].index
+//   }
+//   return parentMenu.value.index
+// })
 </script>
 
 <style scoped>

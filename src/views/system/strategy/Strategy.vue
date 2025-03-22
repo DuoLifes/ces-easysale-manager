@@ -48,8 +48,8 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import TableSearch from '@/components/table-search.vue'
-import TableCustom from '@/components/table-custom.vue'
+import TableSearch from '@/components/common/table-search.vue'
+import TableCustom from '@/components/common/table-custom.vue'
 import { fetchStrategyList, deleteStrategy, fetchSiteData } from '@/api'
 import { FormOption } from '@/types/form-option'
 import { StrategyQuery, Strategy } from '@/types/strategy'
@@ -68,7 +68,7 @@ const queryParams = reactive<StrategyQuery>({
   carrier: '', // 运营商，字段名统一为carrier
   strategyType: '', // 策略类别，与原型图匹配
   site: '', // 所属局点，与原型图匹配
-  pageNum: 1, // 当前页码
+  pageNo: 1, // 当前页码
   pageSize: 10, // 每页条数
 })
 
@@ -264,7 +264,7 @@ const resetPagination = () => {
   pagination.currentPage = 1
   pagination.pageSize = 10
   pagination.total = 0
-  queryParams.pageNum = 1
+  queryParams.pageNo = 1
   queryParams.pageSize = 10
 }
 
@@ -293,7 +293,7 @@ const handleSearch = () => {
 
 // 处理页码变化
 const handlePageChange = (page: number) => {
-  queryParams.pageNum = page
+  queryParams.pageNo = page
   pagination.currentPage = page
   getData()
 }
@@ -302,7 +302,7 @@ const handlePageChange = (page: number) => {
 const handleSizeChange = (size: number) => {
   queryParams.pageSize = size
   pagination.pageSize = size
-  queryParams.pageNum = 1
+  queryParams.pageNo = 1
   pagination.currentPage = 1
   getData()
 }

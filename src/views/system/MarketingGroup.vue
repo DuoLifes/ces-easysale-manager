@@ -65,10 +65,10 @@ import {
 } from '@/api'
 
 // 导入组件
-import TableCustom from '@/components/table-custom.vue'
-import TableSearch from '@/components/table-search.vue'
-import TableEdit from '@/components/table-edit.vue'
-import DialogTitle from '@/components/dialog-title.vue'
+import TableCustom from '@/components/common/table-custom.vue'
+import TableSearch from '@/components/common/table-search.vue'
+import TableEdit from '@/components/common/table-edit.vue'
+import DialogTitle from '@/components/common/dialog-title.vue'
 
 /**
  * API 响应数据接口
@@ -201,7 +201,7 @@ const getData = async () => {
       carrier: query.carrier === 'all' ? '' : query.carrier,
       siteName: query.siteName,
       marketingGroupName: query.marketingGroupName,
-      pageNum: page.index,
+      pageNo: page.index,
       pageSize: page.size,
     })
     if (res.code === 200) {

@@ -43,8 +43,8 @@ import { fetchProspectData, deleteProspect } from '@/api'
 import { useRouter } from 'vue-router'
 
 // 导入组件
-import TableCustom from '@/components/table-custom.vue'
-import TableSearch from '@/components/table-search.vue'
+import TableCustom from '@/components/common/table-custom.vue'
+import TableSearch from '@/components/common/table-search.vue'
 const router = useRouter()
 
 interface ApiError {
@@ -138,7 +138,7 @@ const getData = async () => {
       siteName: query.siteName === 'all' ? '' : query.siteName,
       gridName: query.gridName === 'all' ? '' : query.gridName,
       userAccount: query.userAccount,
-      pageNum: page.index,
+      pageNo: page.index,
       pageSize: page.size,
     })
     if (res.code === 200) {

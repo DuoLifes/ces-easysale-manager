@@ -18,7 +18,7 @@ export interface GridQuery {
   carrier?: string
   siteName?: string
   gridName?: string
-  pageNum?: number
+  pageNo?: number
   pageSize?: number
 }
 

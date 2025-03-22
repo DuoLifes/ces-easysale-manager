@@ -39,7 +39,7 @@ interface LoginParams {
 interface SiteQueryParams {
   carrier?: string
   siteName?: string
-  pageNum?: number
+  pageNo?: number
   pageSize?: number
 }
 
@@ -50,7 +50,7 @@ interface MarketingGroupQueryParams {
   carrier?: string
   siteName?: string
   marketingGroupName?: string
-  pageNum?: number
+  pageNo?: number
   pageSize?: number
 }
 
@@ -59,7 +59,7 @@ interface MarketingGroupQueryParams {
  */
 interface RoleQueryParams {
   roleName?: string
-  pageNum?: number
+  pageNo?: number
   pageSize?: number
 }
 
@@ -70,7 +70,7 @@ interface ProspectQueryParams {
   siteName?: string
   gridName?: string
   userAccount?: string
-  pageNum?: number
+  pageNo?: number
   pageSize?: number
 }
 
@@ -113,7 +113,7 @@ export const fetchSiteData = (
     data: {
       carrier: params?.carrier === 'all' ? '' : params?.carrier || '',
       siteName: params?.siteName || '',
-      pageNum: params?.pageNum || 1,
+      pageNo: params?.pageNo || 1,
       pageSize: params?.pageSize || 10,
     },
   })
@@ -181,7 +181,7 @@ export const fetchGridData = (
       carrier: params?.carrier === 'all' ? '' : params?.carrier || '',
       siteName: params?.siteName || '',
       gridName: params?.gridName || '',
-      pageNum: params?.pageNum || 1,
+      pageNo: params?.pageNo || 1,
       pageSize: params?.pageSize || 10,
     },
   })
@@ -232,7 +232,7 @@ export const fetchCommunityData = (
       siteName: params?.siteName || '',
       gridName: params?.gridName || '',
       communityName: params?.communityName || '',
-      pageNum: params?.pageNum || 1,
+      pageNo: params?.pageNo || 1,
       pageSize: params?.pageSize || 10,
     },
   })
@@ -280,7 +280,7 @@ export const fetchMarketingGroupData = (
       carrier: params?.carrier === 'all' ? '' : params?.carrier || '',
       siteName: params?.siteName || '',
       marketingGroupName: params?.marketingGroupName || '',
-      pageNum: params?.pageNum || 1,
+      pageNo: params?.pageNo || 1,
       pageSize: params?.pageSize || 10,
     },
   })
@@ -349,7 +349,7 @@ export const fetchRoleData = (
     method: 'post',
     data: {
       roleName: params?.roleName || '',
-      pageNum: params?.pageNum || 1,
+      pageNo: params?.pageNo || 1,
       pageSize: params?.pageSize || 10,
     },
   })
@@ -414,7 +414,7 @@ export const fetchAccountList = (params: {
   marketingGroup?: string
   isEnabled?: boolean
   isExpired?: boolean
-  pageNum: number
+  pageNo: number
   pageSize: number
 }) => {
   return request({
@@ -429,7 +429,7 @@ export const fetchAccountList = (params: {
       marketingGroup: params.marketingGroup || '',
       isEnabled: params.isEnabled,
       isExpired: params.isExpired,
-      pageNum: params.pageNum,
+      pageNo: params.pageNo,
       pageSize: params.pageSize,
     },
   })
@@ -524,7 +524,7 @@ export const fetchTagList = (
       tagName: params.tagName || '',
       tagType: params.tagType || '',
       site: params.site || '',
-      pageNum: params.pageNum || 1,
+      pageNo: params.pageNo || 1,
       pageSize: params.pageSize || 10,
     },
   })
@@ -589,7 +589,7 @@ export const fetchStrategyList = (
       carrier: params.carrier || '',
       strategyType: params.strategyType || '',
       site: params.site || '',
-      pageNum: params.pageNum || 1,
+      pageNo: params.pageNo || 1,
       pageSize: params.pageSize || 10,
     },
   })
@@ -654,7 +654,7 @@ export const fetchProspectData = (
       siteName: params?.siteName === 'all' ? '' : params?.siteName || '',
       gridName: params?.gridName === 'all' ? '' : params?.gridName || '',
       userAccount: params?.userAccount || '',
-      pageNum: params?.pageNum || 1,
+      pageNo: params?.pageNo || 1,
       pageSize: params?.pageSize || 10,
     },
   })

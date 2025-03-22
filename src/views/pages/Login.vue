@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="login-bg">
     <div class="login-container">
@@ -31,7 +32,7 @@
         </el-form-item>
         <div class="pwd-tips">
           <el-checkbox class="pwd-checkbox" v-model="checked" label="记住密码" />
-          <el-link type="primary" @click="$router.push('/reset-pwd')">忘记密码</el-link>
+          <!-- <el-link type="primary" @click="$router.push('/reset-pwd')">忘记密码</el-link> -->
         </div>
         <el-button
           class="login-btn"
@@ -41,10 +42,10 @@
           :loading="loading"
           >登录</el-button
         >
-        <p class="login-tips">Tips : admin/123456。</p>
-        <p class="login-text">
+        <p class="login-tips">Tips : zxjy/zxjy</p>
+        <!-- <p class="login-text">
           没有账号？<el-link type="primary" @click="$router.push('/register')">立即注册</el-link>
-        </p>
+        </p> -->
       </el-form>
     </div>
   </div>
@@ -57,7 +58,7 @@ import { usePermissStore } from '@/store/permiss'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
-import { login as loginApi } from '@/api'
+import { login as loginApi } from '@/api/login'
 import { resetRouter } from '@/router'
 
 interface LoginInfo {
@@ -100,17 +101,40 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           username: param.username,
           password: param.password,
         })
-        if (res.code === 200) {
+        if (res.code === '00000') {
           ElMessage.success('登录成功')
           // 保存用户信息和token
-          localStorage.setItem('ms_username', res.data.userInfo.username)
-          localStorage.setItem('token', res.data.token)
+          localStorage.setItem('ms_username', param.username)
+          localStorage.setItem('token', res.data)
 
           // 清除之前的路由
           resetRouter()
 
           // 设置权限
-          const permissions = res.data.permissions
+          const permissions = [
+            '1',
+            '1_1',
+            '1_2',
+            '1_3',
+            '1_4',
+            '1_5',
+            '1_6',
+            '1_6_1',
+            '1_6_2',
+            '1_6_3',
+            '1_6_4',
+            '1_7',
+            '1_7_1',
+            '1_7_2',
+            '1_7_3',
+            '1_8',
+            '1_8_1',
+            '1_8_2',
+            '1_8_3',
+            '2',
+            '2_1',
+            '2_2',
+          ]
           permiss.handleSet(permissions)
 
           // 将权限信息保存到localStorage
@@ -130,6 +154,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         } else {
           ElMessage.error(res.msg)
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error: unknown) {
         // 网络错误已经在请求拦截器中处理过了，这里不需要再处理
       } finally {

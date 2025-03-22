@@ -186,7 +186,7 @@ export default defineComponent({
           method: 'post',
           data: {
             carrierId: props.carrier,
-            pageNum: 1,
+            pageNo: 1,
             pageSize: 1000, // 获取足够多的局点数据
           },
         })
@@ -365,7 +365,7 @@ export default defineComponent({
               url: '/api/site/list',
               method: 'post',
               data: {
-                pageNum: 1,
+                pageNo: 1,
                 pageSize: 5000, // 尝试获取所有局点
               },
             })

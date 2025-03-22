@@ -32,7 +32,7 @@ export interface AccountQuery {
   enabled?: string
   expired?: string
   marketingGroup?: string
-  pageNum?: number
+  pageNo?: number
   pageSize?: number
 }
 

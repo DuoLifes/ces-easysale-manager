@@ -20,7 +20,7 @@ export interface CommunityQuery {
   siteName?: string
   gridName?: string
   communityName?: string
-  pageNum?: number
+  pageNo?: number
   pageSize?: number
 }
 

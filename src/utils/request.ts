@@ -34,7 +34,7 @@ service.interceptors.request.use(
     // 从 localStorage 获取 token
     const token = localStorage.getItem('token')
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`
+      config.headers['accesstoken'] = `Bearer ${token}`
     }
     return config
   },

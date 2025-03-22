@@ -106,7 +106,7 @@ const getSiteList = async () => {
   try {
     loading.sites = true
     const res = await fetchSiteData({
-      pageNum: 1,
+      pageNo: 1,
       pageSize: 1000, // 获取足够多的局点数据
     })
     if (res.code === 200) {

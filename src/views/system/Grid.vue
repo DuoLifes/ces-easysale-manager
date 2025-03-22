@@ -68,12 +68,12 @@ import type { FormOption, FormOptionList } from '@/types/form-option'
 import { fetchGridData, addGrid, updateGrid, deleteGrid } from '@/api'
 
 // 导入组件
-import TableCustom from '@/components/table-custom.vue'
-import TableSearch from '@/components/table-search.vue'
-import TableEdit from '@/components/table-edit.vue'
-import DialogTitle from '@/components/dialog-title.vue'
-import CarrierSelect from '@/components/CarrierSelect.vue'
-import SiteSelect from '@/components/SiteSelect.vue'
+import TableCustom from '@/components/common/table-custom.vue'
+import TableSearch from '@/components/common/table-search.vue'
+import TableEdit from '@/components/common/table-edit.vue'
+import DialogTitle from '@/components/common/dialog-title.vue'
+import CarrierSelect from '@/components/carrier/CarrierSelect.vue'
+import SiteSelect from '@/components/site/SiteSelect.vue'
 
 // 为组件定义名称
 defineOptions({
@@ -217,7 +217,7 @@ const getData = async () => {
       carrier: query.carrier === 'all' ? '' : query.carrier,
       siteName: query.siteName,
       gridName: query.gridName,
-      pageNum: page.index,
+      pageNo: page.index,
       pageSize: page.size,
     })
     if (res.code === 200) {
